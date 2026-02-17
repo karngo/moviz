@@ -47,7 +47,7 @@ fun WatchlistScreen() {
             )
         }
 
-        MovieList((1..10).map { MovieDetail("") })
+        MovieList((1..10).map { MovieDetail(id = 0) })
     }
 }
 

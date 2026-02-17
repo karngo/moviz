@@ -1,5 +1,6 @@
 package com.example.moviz.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,13 +31,15 @@ import kotlinx.coroutines.withContext
 @Composable
 fun HomeScreen(apiRepository: ApiRepository) {
     var activeTab by remember { mutableStateOf("Now Playing") }
-    var movies by remember { mutableStateOf(emptyList<MovieDetail>()) }
+    var nowPlaying by remember { mutableStateOf(emptyList<MovieDetail>()) }
+    var trending by remember { mutableStateOf(emptyList<MovieDetail>()) }
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
-            apiRepository.getNowPlaying().map {
-                MovieDetail(imageUrl = "https://image.tmdb.org/t/p/w500${it.posterPath}")
-            }.let { movies = it }
+            nowPlaying = apiRepository.getNowPlaying()
+            Log.d("results", "nowplaying: $nowPlaying")
+            trending = apiRepository.getTrending()
+            Log.d("results", "trending: $trending")
         }
     }
 
@@ -61,7 +64,7 @@ fun HomeScreen(apiRepository: ApiRepository) {
             activeTab = activeTab,
             onChange = { activeTab = it })
 
-        MovieGrid(movies)
+        MovieGrid(if (activeTab == "Trending") trending else nowPlaying)
     }
 }
 

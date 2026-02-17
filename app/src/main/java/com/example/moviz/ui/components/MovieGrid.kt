@@ -24,7 +24,7 @@ fun MovieGrid(movies: List<MovieDetail>) {
     ) {
         items(movies) { movie ->
             AsyncImage(
-                movie.imageUrl,
+                movie.posterUrl,
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -40,11 +40,12 @@ fun MovieGrid(movies: List<MovieDetail>) {
 fun PreviewMovieGrid() {
     MovieGrid(
         listOf(
-            MovieDetail(""),
-            MovieDetail(""),
-            MovieDetail(""),
-            MovieDetail(""),
-            MovieDetail("")
+
+            MovieDetail(0),
+            MovieDetail(1),
+            MovieDetail(2),
+            MovieDetail(3),
+            MovieDetail(4)
         )
     )
 }

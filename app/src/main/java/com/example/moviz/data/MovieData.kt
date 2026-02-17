@@ -28,9 +28,9 @@ data class MovieCompact(
     @SerializedName("backdrop_path")
     val backdropPath: String?,
     @SerializedName("genre_ids")
-    val genreIds: List<Int?>?,
+    val genreIds: List<Long>?,
     @SerializedName("id")
-    val id: Int?,
+    val id: Long?,
     @SerializedName("original_language")
     val originalLanguage: String?,
     @SerializedName("original_title")
@@ -50,5 +50,5 @@ data class MovieCompact(
     @SerializedName("vote_average")
     val voteAverage: Double?,
     @SerializedName("vote_count")
-    val voteCount: Int?
+    val voteCount: Long?
 )

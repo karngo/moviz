@@ -64,5 +64,5 @@ fun MovieList(list: List<MovieDetail>) {
 @Preview
 @Composable
 fun PreviewMovieList() {
-    MovieList(listOf(MovieDetail(""), MovieDetail(""), MovieDetail("")))
+    MovieList(listOf(MovieDetail(0), MovieDetail(1), MovieDetail(2)))
 }
