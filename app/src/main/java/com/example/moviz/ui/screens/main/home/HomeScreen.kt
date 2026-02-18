@@ -34,7 +34,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onSelectMovie: () -> 
         modifier = Modifier
             .fillMaxSize()
             .background(Color("#242A32".toColorInt()))
-            .padding(24.dp),
+            .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 0.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
         Text(
