@@ -1,5 +1,6 @@
 package com.example.moviz.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -16,7 +17,7 @@ import coil3.compose.AsyncImage
 import com.example.moviz.ui.model.MovieDetail
 
 @Composable
-fun MovieGrid(movies: List<MovieDetail>) {
+fun MovieGrid(movies: List<MovieDetail>, onClick: () -> Unit) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -30,6 +31,9 @@ fun MovieGrid(movies: List<MovieDetail>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
+                    .clickable(onClick = {
+                        onClick()
+                    })
             )
         }
     }
@@ -47,5 +51,5 @@ fun PreviewMovieGrid() {
             MovieDetail(3),
             MovieDetail(4)
         )
-    )
+    ) {}
 }

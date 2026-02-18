@@ -1,6 +1,5 @@
 package com.example.moviz.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,28 +18,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
-import com.example.moviz.data.ApiRepository
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.moviz.ui.Destination
 import com.example.moviz.ui.components.MovieGrid
 import com.example.moviz.ui.components.SearchTab
 import com.example.moviz.ui.components.Tabs
-import com.example.moviz.ui.model.MovieDetail
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @Composable
-fun HomeScreen(apiRepository: ApiRepository) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navigateTo: (Destination) -> Unit) {
     var activeTab by remember { mutableStateOf("Now Playing") }
-    var nowPlaying by remember { mutableStateOf(emptyList<MovieDetail>()) }
-    var trending by remember { mutableStateOf(emptyList<MovieDetail>()) }
-
-    LaunchedEffect(Unit) {
-        withContext(Dispatchers.IO) {
-            nowPlaying = apiRepository.getNowPlaying()
-            Log.d("results", "nowplaying: $nowPlaying")
-            trending = apiRepository.getTrending()
-            Log.d("results", "trending: $trending")
-        }
-    }
+    val nowPlaying by viewModel.nowPlaying.collectAsStateWithLifecycle()
+    val trending by viewModel.trending.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -64,12 +52,14 @@ fun HomeScreen(apiRepository: ApiRepository) {
             activeTab = activeTab,
             onChange = { activeTab = it })
 
-        MovieGrid(if (activeTab == "Trending") trending else nowPlaying)
+        MovieGrid(if (activeTab == "Trending") trending else nowPlaying) {
+            navigateTo(Destination.MovieDetail)
+        }
     }
 }
 
 @Preview
 @Composable
 fun PreviewHomeScreen() {
-//    HomeScreen()
+    HomeScreen {}
 }
