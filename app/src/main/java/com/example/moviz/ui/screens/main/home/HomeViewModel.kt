@@ -1,4 +1,4 @@
-package com.example.moviz.ui.screens
+package com.example.moviz.ui.screens.main.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

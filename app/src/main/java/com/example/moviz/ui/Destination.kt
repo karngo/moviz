@@ -4,8 +4,19 @@ import kotlinx.serialization.Serializable
 
 sealed class Destination {
     @Serializable
-    object Home : Destination()
+    object Main : Destination()
 
     @Serializable
     object MovieDetail : Destination()
+}
+
+sealed class MainDestination {
+    @Serializable
+    object Home : MainDestination()
+
+    @Serializable
+    object Search : MainDestination()
+
+    @Serializable
+    object Bookmarked : MainDestination()
 }

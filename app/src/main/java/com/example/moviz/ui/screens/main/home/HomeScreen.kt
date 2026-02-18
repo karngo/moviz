@@ -1,4 +1,4 @@
-package com.example.moviz.ui.screens
+package com.example.moviz.ui.screens.main.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,13 +20,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.moviz.ui.Destination
 import com.example.moviz.ui.components.MovieGrid
 import com.example.moviz.ui.components.SearchTab
 import com.example.moviz.ui.components.Tabs
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navigateTo: (Destination) -> Unit) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onSelectMovie: () -> Unit) {
     var activeTab by remember { mutableStateOf("Now Playing") }
     val nowPlaying by viewModel.nowPlaying.collectAsStateWithLifecycle()
     val trending by viewModel.trending.collectAsStateWithLifecycle()
@@ -53,7 +52,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), navigateTo: (Destinat
             onChange = { activeTab = it })
 
         MovieGrid(if (activeTab == "Trending") trending else nowPlaying) {
-            navigateTo(Destination.MovieDetail)
+            onSelectMovie()
         }
     }
 }
