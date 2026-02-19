@@ -8,7 +8,6 @@ import com.example.moviz.ui.model.MovieDetail
 import com.example.moviz.utils.getYearFromDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -49,10 +48,6 @@ class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) 
         ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
 
     override fun searchMovie(query: String): Flow<PagingData<MovieDetail>> {
-        if (query.trim().isEmpty()) {
-            return flowOf(PagingData.empty())
-        }
-
         return Pager(
             config = PagingConfig(
                 pageSize = 20,

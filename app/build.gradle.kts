@@ -74,4 +74,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.7")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
     implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
+
+    implementation("androidx.paging:paging-runtime:3.4.1")
+    implementation("androidx.paging:paging-compose:3.4.1")
 }

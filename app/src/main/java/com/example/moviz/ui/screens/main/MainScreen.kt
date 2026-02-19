@@ -52,7 +52,6 @@ fun MainScreen(onViewMovie: () -> Unit) {
             }
             launchSingleTop = true
         }
-//        selectedDestination = destination
     }
 
     Scaffold(

@@ -7,6 +7,14 @@ class SearchPagingSource(private val apiService: ApiService, private val query: 
     PagingSource<Int, MovieCompact>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieCompact> {
+        if (query.trim().isEmpty()) {
+            return LoadResult.Page(
+                data = emptyList(),
+                prevKey = null,
+                nextKey = null
+            )
+        }
+
         val page = params.key ?: 1
 
         return try {

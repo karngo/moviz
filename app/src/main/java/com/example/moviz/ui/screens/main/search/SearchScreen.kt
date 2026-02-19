@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviz.R
 import com.example.moviz.ui.components.MovieList
@@ -43,6 +42,8 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: () -
                 viewModel.searchMovies(searchText)
             }
         }
+
+        Text(searchResults.loadState.isIdle.toString())
 
         MovieList(
             searchResults,
