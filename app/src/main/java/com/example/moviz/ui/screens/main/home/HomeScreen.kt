@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviz.ui.MainDestination
 import com.example.moviz.ui.components.MovieGrid
 import com.example.moviz.ui.components.SearchDisplay
@@ -32,8 +32,8 @@ fun HomeScreen(
     onNavigate: (MainDestination) -> Unit
 ) {
     var activeTab by remember { mutableStateOf("Now Playing") }
-    val nowPlaying by viewModel.nowPlaying.collectAsStateWithLifecycle()
-    val trending by viewModel.trending.collectAsStateWithLifecycle()
+    val nowPlaying = viewModel.nowPlaying.collectAsLazyPagingItems()
+    val trending = viewModel.trending.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier

@@ -1,7 +1,16 @@
 package com.example.moviz.data
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.example.moviz.ui.model.MovieDetail
 import com.example.moviz.utils.getYearFromDate
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) : ApiRepository {
@@ -18,18 +27,39 @@ class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) 
         )
     }
 
-    override suspend fun getNowPlaying(): List<MovieDetail> =
-        apiService.getNowPlaying().body()?.results?.map { toMovieDetail(it) } ?: emptyList()
+    override fun getNowPlaying(): Flow<PagingData<MovieDetail>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 20,
+            ),
+            pagingSourceFactory = {
+                NowPlayingPagingSource(apiService)
+            }
+        ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
 
-    override suspend fun getTrending(): List<MovieDetail> =
-        apiService.getTrending().body()?.results?.map { toMovieDetail(it) } ?: emptyList()
 
-    override suspend fun searchMovie(query: String): List<MovieDetail> {
+    override fun getTrending(): Flow<PagingData<MovieDetail>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 20,
+            ),
+            pagingSourceFactory = {
+                TrendingPagingSource(apiService)
+            }
+        ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
+
+    override fun searchMovie(query: String): Flow<PagingData<MovieDetail>> {
         if (query.trim().isEmpty()) {
-            return emptyList()
+            return flowOf(PagingData.empty())
         }
 
-        return apiService.searchMovie(query).body()?.results?.map { toMovieDetail(it) }
-            ?: emptyList()
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+            ),
+            pagingSourceFactory = {
+                SearchPagingSource(apiService, query)
+            }
+        ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
     }
 }

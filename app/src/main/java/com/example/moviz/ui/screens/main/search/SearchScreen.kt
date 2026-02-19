@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.moviz.R
 import com.example.moviz.ui.components.MovieList
 import com.example.moviz.ui.components.SearchTab
@@ -23,7 +24,7 @@ import com.example.moviz.ui.components.ToolBar
 
 @Composable
 fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: () -> Unit) {
-    val searchResults by viewModel.searchResults.collectAsStateWithLifecycle()
+    val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
 
     Column(
         modifier = Modifier

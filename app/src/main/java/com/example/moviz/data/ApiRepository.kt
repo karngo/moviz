@@ -1,11 +1,13 @@
 package com.example.moviz.data
 
+import androidx.paging.PagingData
 import com.example.moviz.ui.model.MovieDetail
+import kotlinx.coroutines.flow.Flow
 
 interface ApiRepository {
-    suspend fun getNowPlaying(): List<MovieDetail>
+    fun getNowPlaying(): Flow<PagingData<MovieDetail>>
 
-    suspend fun getTrending(): List<MovieDetail>
+    fun getTrending(): Flow<PagingData<MovieDetail>>
 
-    suspend fun searchMovie(query: String): List<MovieDetail>
+    fun searchMovie(query: String): Flow<PagingData<MovieDetail>>
 }
