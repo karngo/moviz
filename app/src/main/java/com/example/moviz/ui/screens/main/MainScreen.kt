@@ -12,9 +12,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -22,15 +19,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.moviz.R
 import com.example.moviz.ui.MainDestination
+import com.example.moviz.ui.screens.main.bookmarked.BookmarkedScreen
+import com.example.moviz.ui.screens.main.home.HomeScreen
+import com.example.moviz.ui.screens.main.search.SearchScreen
 
 @Composable
 fun MainScreen(onViewMovie: () -> Unit) {
     val navController = rememberNavController()
     val startDestination: MainDestination = MainDestination.Home
-    var selectedDestination by remember { mutableStateOf(startDestination) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val selectedDestination =
+        navBackStackEntry?.destination?.route ?: startDestination::class.qualifiedName
 
     val navBarItemColors = NavigationBarItemDefaults.colors(
         indicatorColor = Color.Transparent,
@@ -39,6 +44,16 @@ fun MainScreen(onViewMovie: () -> Unit) {
         unselectedIconColor = Color(0xFF67686D),
         unselectedTextColor = Color(0xFF67686D)
     )
+
+    fun moveToTab(destination: MainDestination) {
+        navController.navigate(destination) {
+            popUpTo(0) {
+                inclusive = true
+            }
+            launchSingleTop = true
+        }
+//        selectedDestination = destination
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {
@@ -56,10 +71,9 @@ fun MainScreen(onViewMovie: () -> Unit) {
                     )
                 }) {
                 NavigationBarItem(
-                    selected = selectedDestination == MainDestination.Home,
+                    selected = selectedDestination == MainDestination.Home::class.qualifiedName,
                     onClick = {
-                        navController.navigate(route = MainDestination.Home)
-                        selectedDestination = MainDestination.Home
+                        moveToTab(MainDestination.Home)
                     },
                     icon = {
                         Icon(painterResource(R.drawable.ic_home), contentDescription = "Home")
@@ -71,10 +85,9 @@ fun MainScreen(onViewMovie: () -> Unit) {
                 )
 
                 NavigationBarItem(
-                    selected = selectedDestination == MainDestination.Search,
+                    selected = selectedDestination == MainDestination.Search::class.qualifiedName,
                     onClick = {
-                        navController.navigate(route = MainDestination.Search)
-                        selectedDestination = MainDestination.Search
+                        moveToTab(MainDestination.Search)
                     },
                     icon = {
                         Icon(
@@ -89,10 +102,9 @@ fun MainScreen(onViewMovie: () -> Unit) {
                 )
 
                 NavigationBarItem(
-                    selected = selectedDestination == MainDestination.Bookmarked,
+                    selected = selectedDestination == MainDestination.Bookmarked::class.qualifiedName,
                     onClick = {
-                        navController.navigate(route = MainDestination.Bookmarked)
-                        selectedDestination = MainDestination.Bookmarked
+                        moveToTab(MainDestination.Bookmarked)
                     },
                     icon = {
                         Icon(
@@ -108,7 +120,20 @@ fun MainScreen(onViewMovie: () -> Unit) {
             }
         }) { contentPadding ->
         Box(modifier = Modifier.padding(contentPadding)) {
-            MainNavHost(navController, startDestination, onViewMovie = onViewMovie)
+            NavHost(navController = navController, startDestination = startDestination) {
+                composable<MainDestination.Home> {
+                    HomeScreen(
+                        onSelectMovie = { onViewMovie() },
+                        onNavigate = { moveToTab(it) }
+                    )
+                }
+                composable<MainDestination.Search> {
+                    SearchScreen {
+                        onViewMovie()
+                    }
+                }
+                composable<MainDestination.Bookmarked> { BookmarkedScreen() }
+            }
         }
     }
 }

@@ -6,4 +6,6 @@ interface ApiRepository {
     suspend fun getNowPlaying(): List<MovieDetail>
 
     suspend fun getTrending(): List<MovieDetail>
+
+    suspend fun searchMovie(query: String): List<MovieDetail>
 }

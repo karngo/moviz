@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -35,6 +34,7 @@ import com.example.moviz.R
 import com.example.moviz.ui.components.IconText
 import com.example.moviz.ui.components.Rating
 import com.example.moviz.ui.components.Tabs
+import com.example.moviz.ui.components.ToolBar
 
 @Composable
 fun MovieDetailScreen() {
@@ -43,26 +43,7 @@ fun MovieDetailScreen() {
             .fillMaxSize()
             .background(Color("#242A32".toColorInt()))
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_arrow_left),
-                contentDescription = "Back Button"
-            )
-
-            Text("Detail", color = Color.White, fontSize = 24.sp)
-
-            Image(
-                painter = painterResource(R.drawable.ic_bookmark),
-                contentDescription = "Bookmark",
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
+        ToolBar("Detail", trailingIcon = R.drawable.ic_bookmark)
         Box {
             Image(
                 painter = painterResource(R.drawable.dummy_movie_poster),

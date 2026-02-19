@@ -5,7 +5,7 @@ data class MovieDetail(
     val title: String = "",
     val desc: String = "",
     val rating: Double? = null,
-    val releaseData: Long? = null,
+    val releaseYear: String = "",
     val posterUrl: String = "",
     val backdropUrl: String = ""
 )
