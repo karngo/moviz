@@ -1,16 +1,26 @@
-package com.example.moviz.data
+package com.example.moviz.data.pagingsource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.example.moviz.data.ApiService
+import com.example.moviz.data.model.MovieCompact
 
-class NowPlayingPagingSource(private val apiService: ApiService) :
+class SearchPagingSource(private val apiService: ApiService, private val query: String) :
     PagingSource<Int, MovieCompact>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieCompact> {
+        if (query.trim().isEmpty()) {
+            return LoadResult.Page(
+                data = emptyList(),
+                prevKey = null,
+                nextKey = null
+            )
+        }
+
         val page = params.key ?: 1
 
         return try {
-            val response = apiService.getNowPlaying(page).body()
+            val response = apiService.searchMovie(query, page).body()
             val results = response?.results ?: emptyList()
 
             val currentPage = response?.page ?: page

@@ -8,6 +8,9 @@ import androidx.paging.map
 import com.example.moviz.data.db.MovieEntity
 import com.example.moviz.data.db.MovizDatabase
 import com.example.moviz.data.mediator.NowPlayingRemoteMediator
+import com.example.moviz.data.model.MovieCompact
+import com.example.moviz.data.pagingsource.SearchPagingSource
+import com.example.moviz.data.pagingsource.TrendingPagingSource
 import com.example.moviz.ui.model.MovieDetail
 import com.example.moviz.utils.getYearFromDate
 import kotlinx.coroutines.Dispatchers

@@ -1,4 +1,4 @@
-package com.example.moviz.data
+package com.example.moviz.data.model
 
 import com.google.gson.annotations.SerializedName
 

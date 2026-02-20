@@ -1,6 +1,7 @@
 package com.example.moviz.data
 
 import com.example.moviz.data.model.CompleteMovieData
+import com.example.moviz.data.model.MovieData
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
