@@ -4,6 +4,7 @@ import com.example.moviz.data.ApiRepository
 import com.example.moviz.data.ApiRepositoryImpl
 import com.example.moviz.data.ApiService
 import com.example.moviz.data.AuthInterceptor
+import com.example.moviz.data.db.MovizDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,7 +42,7 @@ object AppModule {
     }
 
     @Provides
-    fun provideApiRepository(apiService: ApiService): ApiRepository {
-        return ApiRepositoryImpl(apiService)
+    fun provideApiRepository(apiService: ApiService, database: MovizDatabase): ApiRepository {
+        return ApiRepositoryImpl(apiService, database)
     }
 }

@@ -1,9 +1,13 @@
 package com.example.moviz.data
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.moviz.data.db.MovieEntity
+import com.example.moviz.data.db.MovizDatabase
+import com.example.moviz.data.mediator.NowPlayingRemoteMediator
 import com.example.moviz.ui.model.MovieDetail
 import com.example.moviz.utils.getYearFromDate
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +16,11 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) : ApiRepository {
+@OptIn(ExperimentalPagingApi::class)
+class ApiRepositoryImpl @Inject constructor(
+    private val apiService: ApiService,
+    private val database: MovizDatabase
+) : ApiRepository {
 
     fun toMovieDetail(movieData: MovieCompact): MovieDetail {
         return MovieDetail(
@@ -26,13 +34,27 @@ class ApiRepositoryImpl @Inject constructor(private val apiService: ApiService) 
         )
     }
 
+    fun toMovieDetail(movieEntity: MovieEntity): MovieDetail {
+        return MovieDetail(
+            id = movieEntity.id,
+            title = movieEntity.title,
+            desc = movieEntity.overview,
+            rating = movieEntity.voteAverage,
+            releaseYear = movieEntity.releaseDate.let { getYearFromDate(it) },
+            posterUrl = movieEntity.posterPath.let { "https://image.tmdb.org/t/p/w500$it" },
+            backdropUrl = movieEntity.backdropPath.let { "https://image.tmdb.org/t/p/w500$it" }
+        )
+    }
+
     override fun getNowPlaying(): Flow<PagingData<MovieDetail>> =
         Pager(
             config = PagingConfig(
                 pageSize = 20,
+                enablePlaceholders = false
             ),
+            remoteMediator = NowPlayingRemoteMediator(apiService, database),
             pagingSourceFactory = {
-                NowPlayingPagingSource(apiService)
+                database.movieDao().getNowPlayingMovies()
             }
         ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
 

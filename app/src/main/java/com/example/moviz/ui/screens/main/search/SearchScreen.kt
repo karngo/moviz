@@ -43,8 +43,6 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: () -
             }
         }
 
-        Text(searchResults.loadState.isIdle.toString())
-
         MovieList(
             searchResults,
             modifier = Modifier.padding(horizontal = 24.dp)
