@@ -5,6 +5,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.map
+import com.example.moviz.data.db.BookmarkedMovieEntity
 import com.example.moviz.data.db.MovieEntity
 import com.example.moviz.data.db.MovizDatabase
 import com.example.moviz.data.mediator.NowPlayingRemoteMediator
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import kotlin.math.round
 
 @OptIn(ExperimentalPagingApi::class)
 class ApiRepositoryImpl @Inject constructor(
@@ -31,7 +33,7 @@ class ApiRepositoryImpl @Inject constructor(
             id = movieData.id ?: 0,
             title = movieData.title ?: "",
             desc = movieData.overview ?: "",
-            rating = movieData.voteAverage,
+            rating = movieData.voteAverage?.let { round(it * 10) / 10 },
             releaseYear = movieData.releaseDate?.let { getYearFromDate(it) } ?: "",
             posterUrl = movieData.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" } ?: "",
             backdropUrl = movieData.backdropPath?.let { "https://image.tmdb.org/t/p/w500$it" } ?: ""
@@ -43,8 +45,8 @@ class ApiRepositoryImpl @Inject constructor(
             id = movieEntity.id,
             title = movieEntity.title,
             desc = movieEntity.overview,
-            rating = movieEntity.voteAverage,
-            releaseYear = movieEntity.releaseDate.let { getYearFromDate(it) },
+            rating = movieEntity.voteAverage?.let { round(it * 10) / 10 },
+            releaseYear = getYearFromDate(movieEntity.releaseDate),
             posterUrl = movieEntity.posterPath.let { "https://image.tmdb.org/t/p/w500$it" },
             backdropUrl = movieEntity.backdropPath.let { "https://image.tmdb.org/t/p/w500$it" }
         )
@@ -102,4 +104,20 @@ class ApiRepositoryImpl @Inject constructor(
             )
         } ?: emit(null)
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun updateBookmark(movieId: Long, isBookmarked: Boolean) {
+        if (isBookmarked)
+            database.bookmarkedMovieDao().bookmarkMovie(BookmarkedMovieEntity(movieId))
+        else
+            database.bookmarkedMovieDao().removeBookmark(movieId)
+    }
+
+    override suspend fun isMovieBookmarked(movieId: Long): Boolean {
+        return database.bookmarkedMovieDao().isMovieBookmarked(movieId)
+    }
+
+    override suspend fun getBookmarkedMovies(): List<MovieDetail> {
+        val bookmarkedEntities = database.bookmarkedMovieDao().getBookmarkedMoviesAvailableLocally()
+        return bookmarkedEntities.map { toMovieDetail(it) }
+    }
 }

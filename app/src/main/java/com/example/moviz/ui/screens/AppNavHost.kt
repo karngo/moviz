@@ -1,6 +1,5 @@
 package com.example.moviz.ui.screens
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -21,14 +20,14 @@ fun AppNavHost(
         startDestination = startDestination
     ) {
         composable<Destination.Main> {
-            MainScreen {
-                Log.d("navigation", "movieId: $it")
-                navController.navigate(Destination.Detail(it))
+            MainScreen { id, allow ->
+                navController.navigate(Destination.Detail(id, allow))
             }
         }
 
         composable<Destination.Detail> {
-            MovieDetailScreen(movieId = it.toRoute<Destination.Detail>().movieId)
+            val route = it.toRoute<Destination.Detail>()
+            MovieDetailScreen(movieId = route.movieId, allowBookmark = route.allowBookmark)
         }
     }
 }

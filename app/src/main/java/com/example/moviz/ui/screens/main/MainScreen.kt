@@ -30,7 +30,7 @@ import com.example.moviz.ui.screens.main.home.HomeScreen
 import com.example.moviz.ui.screens.main.search.SearchScreen
 
 @Composable
-fun MainScreen(onViewMovie: (Long) -> Unit) {
+fun MainScreen(onViewMovie: (Long, Boolean) -> Unit) {
     val navController = rememberNavController()
     val startDestination: MainDestination = MainDestination.Home
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -122,13 +122,13 @@ fun MainScreen(onViewMovie: (Long) -> Unit) {
             NavHost(navController = navController, startDestination = startDestination) {
                 composable<MainDestination.Home> {
                     HomeScreen(
-                        onSelectMovie = { onViewMovie(it) },
+                        onSelectMovie = { id, allow -> onViewMovie(id, allow) },
                         onNavigate = { moveToTab(it) }
                     )
                 }
                 composable<MainDestination.Search> {
                     SearchScreen {
-                        onViewMovie(it)
+                        onViewMovie(it, false)
                     }
                 }
                 composable<MainDestination.Bookmarked> { BookmarkedScreen() }
@@ -140,5 +140,5 @@ fun MainScreen(onViewMovie: (Long) -> Unit) {
 @Preview
 @Composable
 fun MainScreenPreview() {
-    MainScreen(onViewMovie = { })
+    MainScreen(onViewMovie = { _, _ -> })
 }

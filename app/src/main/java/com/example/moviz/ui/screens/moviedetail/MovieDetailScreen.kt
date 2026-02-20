@@ -40,8 +40,13 @@ import com.example.moviz.ui.components.Tabs
 import com.example.moviz.ui.components.ToolBar
 
 @Composable
-fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel(), movieId: Long) {
+fun MovieDetailScreen(
+    viewModel: MovieDetailViewModel = hiltViewModel(),
+    movieId: Long,
+    allowBookmark: Boolean = false
+) {
     val movieDetail by viewModel.movieDetail.collectAsStateWithLifecycle()
+    val isBookmarked by viewModel.isBookmarked.collectAsStateWithLifecycle()
 
     LaunchedEffect(movieId) {
         viewModel.fetchMovieDetails(movieId)
@@ -52,7 +57,15 @@ fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel(), movieId
             .fillMaxSize()
             .background(Color("#242A32".toColorInt()))
     ) {
-        ToolBar("Detail", trailingIcon = R.drawable.ic_bookmark)
+        ToolBar(
+            "Detail",
+            trailingIcon = if (!allowBookmark) null
+            else if (isBookmarked) R.drawable.ic_bookmark_filled
+            else R.drawable.ic_bookmark,
+            onTrailClick = {
+                viewModel.updateBookmark(movieId, !isBookmarked)
+            }
+        )
         Box {
             AsyncImage(
                 movieDetail.backdropUrl,
