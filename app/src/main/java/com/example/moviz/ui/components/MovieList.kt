@@ -35,7 +35,7 @@ import com.example.moviz.ui.model.MovieDetail
 fun MovieList(
     movies: LazyPagingItems<MovieDetail>,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: (Long) -> Unit
 ) {
     when (movies.loadState.refresh) {
         is LoadState.Loading -> {
@@ -78,7 +78,7 @@ fun MovieList(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = onClick),
+                    .clickable(onClick = { onClick(movie.id) }),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 AsyncImage(

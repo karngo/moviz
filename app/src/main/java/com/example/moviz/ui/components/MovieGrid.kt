@@ -33,7 +33,7 @@ import coil3.compose.AsyncImage
 import com.example.moviz.ui.model.MovieDetail
 
 @Composable
-fun MovieGrid(movies: LazyPagingItems<MovieDetail>, onClick: () -> Unit) {
+fun MovieGrid(movies: LazyPagingItems<MovieDetail>, onClick: (Long) -> Unit) {
     when (movies.loadState.refresh) {
         is LoadState.Loading -> {
             Box(
@@ -71,6 +71,7 @@ fun MovieGrid(movies: LazyPagingItems<MovieDetail>, onClick: () -> Unit) {
         contentPadding = PaddingValues(bottom = 24.dp)
     ) {
         items(movies.itemCount) { index ->
+
             AsyncImage(
                 movies[index]?.posterUrl,
                 contentDescription = null,
@@ -79,7 +80,7 @@ fun MovieGrid(movies: LazyPagingItems<MovieDetail>, onClick: () -> Unit) {
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
                     .clickable(onClick = {
-                        onClick()
+                        movies[index]?.let { onClick(it.id) }
                     })
             )
         }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,7 +21,7 @@ import com.example.moviz.ui.components.SearchTab
 import com.example.moviz.ui.components.ToolBar
 
 @Composable
-fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: () -> Unit) {
+fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: (Long) -> Unit) {
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
 
     Column(
@@ -47,7 +46,7 @@ fun SearchScreen(viewModel: SearchViewModel = hiltViewModel(), onViewMovie: () -
             searchResults,
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
-            onViewMovie()
+            onViewMovie(it)
         }
     }
 }

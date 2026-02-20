@@ -7,7 +7,7 @@ sealed class Destination {
     object Main : Destination()
 
     @Serializable
-    object MovieDetail : Destination()
+    data class Detail(val movieId: Long) : Destination()
 }
 
 sealed class MainDestination {

@@ -28,7 +28,7 @@ import com.example.moviz.ui.components.Tabs
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onSelectMovie: () -> Unit,
+    onSelectMovie: (Long) -> Unit,
     onNavigate: (MainDestination) -> Unit
 ) {
     var activeTab by remember { mutableStateOf("Now Playing") }
@@ -59,7 +59,7 @@ fun HomeScreen(
             onChange = { activeTab = it })
 
         MovieGrid(if (activeTab == "Trending") trending else nowPlaying) {
-            onSelectMovie()
+            onSelectMovie(it)
         }
     }
 }

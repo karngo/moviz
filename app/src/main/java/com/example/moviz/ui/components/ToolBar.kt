@@ -24,7 +24,6 @@ import com.example.moviz.R
 fun ToolBar(
     title: String,
     @DrawableRes trailingIcon: Int? = null,
-    onBackPress: () -> Unit = {},
     onTrailClick: () -> Unit = {}
 ) {
     Box(
@@ -35,17 +34,9 @@ fun ToolBar(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_arrow_left),
-                contentDescription = "Back Button",
-                modifier = Modifier.clickable(onClick = {
-                    onBackPress()
-                })
-            )
-
             if (trailingIcon != null)
                 Image(
                     painter = painterResource(trailingIcon),

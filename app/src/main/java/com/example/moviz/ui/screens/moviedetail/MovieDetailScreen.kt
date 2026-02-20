@@ -1,6 +1,5 @@
-package com.example.moviz.ui.screens
+package com.example.moviz.ui.screens.moviedetail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,18 +17,22 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.toColorInt
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.example.moviz.R
 import com.example.moviz.ui.components.IconText
 import com.example.moviz.ui.components.Rating
@@ -37,7 +40,13 @@ import com.example.moviz.ui.components.Tabs
 import com.example.moviz.ui.components.ToolBar
 
 @Composable
-fun MovieDetailScreen() {
+fun MovieDetailScreen(viewModel: MovieDetailViewModel = hiltViewModel(), movieId: Long) {
+    val movieDetail by viewModel.movieDetail.collectAsStateWithLifecycle()
+
+    LaunchedEffect(movieId) {
+        viewModel.fetchMovieDetails(movieId)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,8 +54,8 @@ fun MovieDetailScreen() {
     ) {
         ToolBar("Detail", trailingIcon = R.drawable.ic_bookmark)
         Box {
-            Image(
-                painter = painterResource(R.drawable.dummy_movie_poster),
+            AsyncImage(
+                movieDetail.backdropUrl,
                 contentDescription = "Movie Poster",
                 contentScale = ContentScale.FillWidth,
                 modifier = Modifier
@@ -63,7 +72,7 @@ fun MovieDetailScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
-                Rating("9.3")
+                Rating(movieDetail.rating?.toString() ?: "")
             }
             Row(
                 modifier = Modifier
@@ -73,8 +82,8 @@ fun MovieDetailScreen() {
                     .offset(y = 70.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Image(
-                    painter = painterResource(R.drawable.dummy_movie),
+                AsyncImage(
+                    movieDetail.posterUrl,
                     contentDescription = null,
                     contentScale = ContentScale.FillHeight,
                     modifier = Modifier
@@ -84,7 +93,7 @@ fun MovieDetailScreen() {
                 Column {
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
-                        "Spiderman No Way Home",
+                        movieDetail.title,
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.W600,
@@ -106,7 +115,7 @@ fun MovieDetailScreen() {
                 .height(IntrinsicSize.Max)
         ) {
             Spacer(modifier = Modifier.weight(1f))
-            IconText(R.drawable.ic_calendar, "2021")
+            IconText(R.drawable.ic_calendar, movieDetail.releaseYear)
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -129,7 +138,13 @@ fun MovieDetailScreen() {
                 .padding(horizontal = 24.dp)
                 .padding(top = 32.dp)
         ) {
-            Tabs(listOf("About Movie", "Reviews", "Cast"), "About Movie") { }
+            Tabs(listOf("About Movie"), "About Movie") {}
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                movieDetail.desc,
+                color = Color.White,
+                fontSize = 12.sp,
+            )
         }
     }
 }
@@ -137,5 +152,5 @@ fun MovieDetailScreen() {
 @Preview
 @Composable
 fun PreviewMovieDetailScreen() {
-    MovieDetailScreen()
+    MovieDetailScreen(movieId = 0)
 }

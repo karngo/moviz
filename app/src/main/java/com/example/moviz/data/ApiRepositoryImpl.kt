@@ -12,6 +12,7 @@ import com.example.moviz.ui.model.MovieDetail
 import com.example.moviz.utils.getYearFromDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -79,4 +80,23 @@ class ApiRepositoryImpl @Inject constructor(
             }
         ).flow.map { pagingData -> pagingData.map { toMovieDetail(it) } }.flowOn(Dispatchers.IO)
     }
+
+    override suspend fun getMovieDetail(movieId: Long): Flow<MovieDetail?> = flow {
+        val response = apiService.getMovieDetail(movieId)
+        response.body()?.let { movieData ->
+            emit(
+                MovieDetail(
+                    id = movieData.id ?: 0,
+                    title = movieData.title ?: "",
+                    desc = movieData.overview ?: "",
+                    rating = movieData.voteAverage,
+                    releaseYear = movieData.releaseDate?.let { getYearFromDate(it) } ?: "",
+                    posterUrl = movieData.posterPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                        ?: "",
+                    backdropUrl = movieData.backdropPath?.let { "https://image.tmdb.org/t/p/w500$it" }
+                        ?: ""
+                )
+            )
+        } ?: emit(null)
+    }.flowOn(Dispatchers.IO)
 }
